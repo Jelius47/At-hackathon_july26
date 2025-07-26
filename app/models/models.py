@@ -31,3 +31,15 @@ class Plot(Base):
 
     owner = relationship("User", back_populates="plots")
     drone = relationship("Drone", back_populates="plots")
+
+class Payment(Base):
+    __tablename__ = "payments"
+    id = Column(Integer, primary_key=True, index=True)
+    order_id = Column(String, unique=True)
+    amount = Column(Float)
+    buyer_name = Column(String)
+    buyer_email = Column(String)
+    buyer_phone = Column(String)
+    metadata = Column(JSON)
+    status = Column(String)
+    paid = Column(Boolean, default=False)
