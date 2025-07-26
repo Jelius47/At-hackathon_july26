@@ -7,7 +7,7 @@ class PaymentRequest(BaseModel):
     buyer_name: str
     buyer_email: Optional[str] = None
     buyer_phone: str
-    metadata: Optional[dict] = None
+    extra_data: Optional[dict] = None
 
 class PaymentStatus(BaseModel):
     order_id: str
