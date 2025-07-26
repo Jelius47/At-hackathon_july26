@@ -19,7 +19,7 @@ def create_payment(request: PaymentRequest, db: Session = Depends(get_db)):
         buyer_name=request.buyer_name,
         buyer_email=request.buyer_email,
         buyer_phone=request.buyer_phone,
-        extra_data=request.metadata,
+        extra_data=request.extra_data,
         status="pending",
         paid=False
     )

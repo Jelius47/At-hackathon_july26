@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, JSON
 from sqlalchemy.orm import relationship
 from app.core.database import Base
 
@@ -40,6 +40,6 @@ class Payment(Base):
     buyer_name = Column(String)
     buyer_email = Column(String)
     buyer_phone = Column(String)
-    metadata = Column(JSON)
+    extra_data = Column(JSON)
     status = Column(String)
     paid = Column(Boolean, default=False)
