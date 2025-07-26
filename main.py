@@ -1,11 +1,29 @@
+import requests
 from fastapi import FastAPI, Form
 from fastapi.responses import Response
 from typing import Optional
-from fastapi.staticfiles import StaticFiles
+from dotenv import load_dotenv  # Import load_dotenv
+import os  # Import os to access environment variables
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = FastAPI()
 
-app.mount("/audio", StaticFiles(directory="audio"), name="audio")
+# Fetch the API key from the environment variables
+API_KEY = os.getenv("API_KEY")
+
+def get_random_fact():
+    """Fetches a random educational fact from API Ninjas."""
+    url = f"https://api.api-ninjas.com/v1/facts"
+    headers = {"X-Api-Key": API_KEY}
+    response = requests.get(url, headers=headers)
+    
+    if response.status_code == 200:
+        fact = response.json()[0]["fact"]  # Extract the first fact
+        return fact
+    else:
+        return "Sorry, I couldn't retrieve a fact at the moment."
 
 @app.post("/voicemail")
 async def handle_call(
@@ -20,19 +38,20 @@ async def handle_call(
     currencyCode: Optional[str] = Form(None),
     amount: Optional[str] = Form(None),
 ):
-    if isActive == "1": 
+    if isActive == "1":
         print("📞 Incoming call started")
         print(f"Session ID: {sessionId}")
         print(f"From: {callerNumber} ➡️ To: {destinationNumber}")
         print(f"Direction: {direction}")
 
-        # Respond with instructions — you can customize this part
+        fact = get_random_fact()  # Fetch a fact
+        
         xml_response = f"""<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-    <Say>Hello and welcome! I'm your AI learning assistant, here to help you discover new knowledge and sharpen your skills. Here's a fact for you. There are more than 1,100 known tributaries flowing into the Amazon River. Tributaries are sources of water such as a small river, stream  or other water flow that reaches the river.</Say>
-</Response>"""
+        <Response>
+            <Say>Hello and welcome! I'm your AI learning assistant, here to help you discover new knowledge and sharpen your skills. Here is a single fact to keep you sharp. {fact}</Say>
+        </Response>"""
+        
         return Response(content=xml_response, media_type="application/xml")
-
     else:
         print("📞 Call ended")
         print(f"Session ID: {sessionId}")
@@ -44,15 +63,7 @@ async def handle_call(
         print(f"Recording URL: {recordingUrl}")
         print(f"DTMF Input: {dtmfDigits}")
 
-        return {
-            "message": "Call session completed.",
-            "sessionId": sessionId,
-            "duration": durationInSeconds,
-            "currency": currencyCode,
-            "amount": amount,
-            "recording": recordingUrl,
-            "dtmf": dtmfDigits,
-        }
+        return {"message": "Call session completed."}
 
 if __name__ == "__main__":
     import uvicorn
