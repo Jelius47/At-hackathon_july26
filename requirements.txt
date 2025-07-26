@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+requests
+pydantic
+sqlalchemy
+gunicorn
+python-multipart
+africastalking
+python-dotenv
