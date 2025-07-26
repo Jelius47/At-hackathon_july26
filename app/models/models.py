@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, JSON
+from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey,DateTime,func, JSON
 from sqlalchemy.orm import relationship
 from app.core.database import Base
 
@@ -12,13 +12,16 @@ class User(Base):
 
     plots = relationship("Plot", back_populates="owner")
 
-class Drone(Base):
-    __tablename__ = "drones"
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String)
-    is_available = Column(Boolean, default=True)
+class DroneRequest(Base):
+    __tablename__ = "drone_requests"
 
-    plots = relationship("Plot", back_populates="drone")
+    id = Column(Integer, primary_key=True, index=True)
+    phone_number = Column(String(20), nullable=False)
+    plot_size = Column(Integer, nullable=False)
+    number_of_drones = Column(Integer, nullable=False)
+    total_price_per_hour = Column(Integer, nullable=False)
+    status = Column(String(20), nullable=False, default="pending")
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 class Plot(Base):
     __tablename__ = "plots"
@@ -43,3 +46,5 @@ class Payment(Base):
     extra_data = Column(JSON)
     status = Column(String)
     paid = Column(Boolean, default=False)
+
+
